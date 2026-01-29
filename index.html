@@ -5732,40 +5732,12 @@ const pageHeader = document.getElementById('page-header');
                     hls.attachMedia(videoElement);
                     
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        console.log('HLS manifest parsed, video should start playing');
                         loadingOverlay.classList.remove('show');
-                        
-                        // Initialize Plyr player after HLS is ready
-                        liveTvPlayer = new Plyr(videoElement, playerConfig);
-                        setupPlayerFullscreenRotation(liveTvPlayer);
-                        setupDoubleTapSeek(liveTvPlayer);
-                        setupVolumeBrightnessGestures(liveTvPlayer);
-                        initAdvancedPlayerUI('livetv-player-page', 'livetv', liveTvPlayer);
-                        
-                        liveTvPlayer.on('ready', () => {
-                            console.log('Plyr player ready');
-                            // Try to play, but handle autoplay restrictions
-                            const playPromise = liveTvPlayer.play();
-                            if (playPromise !== undefined) {
-                                playPromise.catch(error => {
-                                    console.log('Auto-play prevented, waiting for user interaction');
-                                    // Show play button instead of forcing autoplay
-                                });
-                            }
-                        });
-                        
-                        liveTvPlayer.on('playing', () => {
-                            console.log('Video is playing');
-                            loadingOverlay.classList.remove('show');
-                        });
-                        
-                        liveTvPlayer.on('error', (error) => {
-                            console.error('Plyr player error:', error);
-                            errorOverlay.classList.add('show');
-                            loadingOverlay.classList.remove('show');
-                        });
-
-                        setupPlayerFullscreenRotation(liveTvPlayer);
+                        initAdvancedPlayerUI('livetv-player-page', 'livetv', videoElement);
+                        const playPromise = videoElement.play();
+                        if (playPromise && typeof playPromise.catch === 'function') {
+                            playPromise.catch(() => {});
+                        }
                     });
                     
                     hls.on(Hls.Events.ERROR, function (event, data) {
@@ -5793,32 +5765,11 @@ const pageHeader = document.getElementById('page-header');
                     videoElement.src = streamUrl;
                     videoElement.addEventListener('loadedmetadata', function() {
                         loadingOverlay.classList.remove('show');
-                        
-                        liveTvPlayer = new Plyr(videoElement, playerConfig);
-                        setupPlayerFullscreenRotation(liveTvPlayer);
-                        setupDoubleTapSeek(liveTvPlayer);
-                        setupVolumeBrightnessGestures(liveTvPlayer);
-                        initAdvancedPlayerUI('livetv-player-page', 'livetv', liveTvPlayer);
-                        
-                        liveTvPlayer.on('ready', () => {
-                            const playPromise = liveTvPlayer.play();
-                            if (playPromise !== undefined) {
-                                playPromise.catch(error => {
-                                    console.log('Auto-play prevented on Safari');
-                                });
-                            }
-                        });
-                        
-                        liveTvPlayer.on('playing', () => {
-                            loadingOverlay.classList.remove('show');
-                        });
-                        
-                        liveTvPlayer.on('error', (error) => {
-                            errorOverlay.classList.add('show');
-                            loadingOverlay.classList.remove('show');
-                        });
-
-                        setupPlayerFullscreenRotation(liveTvPlayer);
+                        initAdvancedPlayerUI('livetv-player-page', 'livetv', videoElement);
+                        const playPromise = videoElement.play();
+                        if (playPromise && typeof playPromise.catch === 'function') {
+                            playPromise.catch(() => {});
+                        }
                     });
                 } else {
                     console.error('HLS is not supported in this browser');
@@ -5831,32 +5782,11 @@ const pageHeader = document.getElementById('page-header');
                 videoElement.src = streamUrl;
                 videoElement.addEventListener('loadedmetadata', function() {
                     loadingOverlay.classList.remove('show');
-                    
-                    liveTvPlayer = new Plyr(videoElement, playerConfig);
-                    setupPlayerFullscreenRotation(liveTvPlayer);
-                    setupDoubleTapSeek(liveTvPlayer);
-                    setupVolumeBrightnessGestures(liveTvPlayer);
-                    initAdvancedPlayerUI('livetv-player-page', 'livetv', liveTvPlayer);
-                    
-                    liveTvPlayer.on('ready', () => {
-                        const playPromise = liveTvPlayer.play();
-                        if (playPromise !== undefined) {
-                            playPromise.catch(error => {
-                                console.log('Auto-play prevented');
-                            });
-                        }
-                    });
-                    
-                    liveTvPlayer.on('playing', () => {
-                        loadingOverlay.classList.remove('show');
-                    });
-                    
-                    liveTvPlayer.on('error', (error) => {
-                        errorOverlay.classList.add('show');
-                        loadingOverlay.classList.remove('show');
-                    });
-
-                    setupPlayerFullscreenRotation(liveTvPlayer);
+                    initAdvancedPlayerUI('livetv-player-page', 'livetv', videoElement);
+                    const playPromise = videoElement.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(() => {});
+                    }
                 });
             }
         };
