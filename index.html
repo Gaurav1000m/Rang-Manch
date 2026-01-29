@@ -2817,8 +2817,8 @@ const firebaseConfig = {
     }
 
     function loadAvatarOptionsFromDB() {
-        const fallbackMaleAvatars = [ "https://static.vecteezy.com/system/resources/previews/053/669/517/non_2x/a-cartoon-avatar-of-a-male-gamer-free-vector.jpg", "https://i.ibb.co/n6p2WfD/avatar2.jpg", "https://i.ibb.co/3kC0WfD/man-avatar-profile-picture-vector-illustration-268834-538.jpg", "https://i.ibb.co/YjWJzGb/images.png", "https://i.ibb.co/9hJ6chz/download.jpg", "https://i.ibb.co/fQ3p8y4/profile-picture-pc.jpg" ];
-        const fallbackFemaleAvatars = [ "https://i.ibb.co/rKwsYPQ/9439775.jpg", "https://i.ibb.co/Cgs2zkg/9439767.jpg" ];
+        const fallbackMaleAvatars = [ "https://static.vecteezy.com/system/resources/previews/053/669/517/non_2x/a-cartoon-avatar-of-a-male-gamer-free-vector.jpg", "https://static.vecteezy.com/system/resources/previews/059/637/014/non_2x/young-man-with-dark-hair-wearing-a-hoodie-casual-character-portrait-png.png", "https://static.vecteezy.com/system/resources/previews/059/641/443/non_2x/digital-male-avatar-character-with-dark-hair-and-friendly-expression-for-online-platforms-png.png", "https://static.vecteezy.com/system/resources/previews/059/641/891/non_2x/young-man-with-glasses-illustration-on-transparent-background-for-online-profiles-and-branding-png.png", "https://static.vecteezy.com/system/resources/previews/059/639/027/non_2x/smiling-young-man-digital-portrait-with-stylish-hair-and-casual-shirt-for-personal-branding-png.png", "https://static.vecteezy.com/system/resources/previews/059/642/135/non_2x/stylish-young-man-illustration-with-short-dark-hair-and-engaging-expression-png.png" ];
+        const fallbackFemaleAvatars = [ "https://static.vecteezy.com/system/resources/previews/048/053/063/non_2x/a-pastel-dream-stylized-avatar-with-purple-and-pink-hair-png.png", "https://static.vecteezy.com/system/resources/previews/059/640/706/non_2x/young-woman-portrait-in-casual-hoodie-with-long-dark-hair-and-friendly-expression-png.png" ];
         maleAvatars = [...fallbackMaleAvatars];
         femaleAvatars = [...fallbackFemaleAvatars];
         database.ref('app_settings/avatars').once('value').then(snapshot => {
@@ -5659,3 +5659,4 @@ const pageHeader = document.getElementById('page-header');
 </script>
 </body>
 </html>
+
