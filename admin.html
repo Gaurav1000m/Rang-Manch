@@ -598,6 +598,111 @@
             opacity: 1;
         }
 
+        /* --- TMDB Search --- */
+        .tmdb-search-container {
+            grid-column: 1 / -1;
+            margin-bottom: 25px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed var(--primary-color);
+        }
+
+        .tmdb-search-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tmdb-search-input-group input {
+            flex-grow: 1;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .tmdb-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1d24;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 12px 12px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            display: none;
+        }
+
+        /* Custom Scrollbar for TMDB Results */
+        .tmdb-results::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tmdb-results::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .tmdb-results::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .tmdb-item {
+            display: flex;
+            padding: 12px 15px;
+            gap: 15px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .tmdb-item:last-child {
+            border-bottom: none;
+        }
+
+        .tmdb-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            padding-left: 20px;
+        }
+
+        .tmdb-item img {
+            width: 45px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .tmdb-item-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .tmdb-item-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+
+        .tmdb-item-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .modal-content {
             background: rgba(26, 29, 36, 0.95);
             backdrop-filter: blur(25px);
@@ -830,9 +935,26 @@
                 <div class="page-header">
                     <h1>Settings</h1>
                 </div>
-                <div class="glass-panel" style="padding: 30px; border-radius: 16px;">
+                <div class="glass-panel" style="padding: 30px; border-radius: 16px; margin-bottom: 25px;">
                     <h3 style="margin-bottom: 20px; color: var(--text-secondary);">Theme & Appearance</h3>
                     <div class="theme-options" id="admin-theme-options"></div>
+                </div>
+
+                <div class="glass-panel" style="padding: 30px; border-radius: 16px;">
+                    <h3 style="margin-bottom: 20px; color: var(--text-secondary);">External API Integration</h3>
+                    <div class="form-group full-width">
+                        <label>TMDB API Key (v3 auth)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="password" id="tmdb-api-key-input" placeholder="Paste your TMDB API Key here..."
+                                style="flex-grow: 1; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 8px; color: white;">
+                            <button class="btn btn-primary" onclick="saveTMDBKey()">Save Key</button>
+                            <button class="btn btn-secondary" onclick="testTMDBKey()">Test Connection</button>
+                        </div>
+                        <p id="tmdb-test-result" style="font-size: 13px; margin-top: 10px; display: none;"></p>
+                        <p style="font-size: 12px; color: #888; margin-top: 8px;">Find your API key in <a
+                                href="https://www.themoviedb.org/settings/api" target="_blank"
+                                style="color: var(--primary-color);">TMDB Settings</a></p>
+                    </div>
                 </div>
             </div>
 
@@ -892,16 +1014,16 @@
 
         // 1. अपनी फायरबेस कॉन्फ़िगरेशन यहां पेस्ट करें
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAdvmI8mRyxEdBlnE0vDF-IW1eTxvR8fzw",
-  authDomain: "gt-store-774fe.firebaseapp.com",
-  databaseURL: "https://gt-store-774fe-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "gt-store-774fe",
-  storageBucket: "gt-store-774fe.firebasestorage.app",
-  messagingSenderId: "237273289443",
-  appId: "1:237273289443:web:eae46a81c1ab7519f86bd6",
-  measurementId: "G-RK3P4FNCPG"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdvmI8mRyxEdBlnE0vDF-IW1eTxvR8fzw",
+            authDomain: "gt-store-774fe.firebaseapp.com",
+            databaseURL: "https://gt-store-774fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "gt-store-774fe",
+            storageBucket: "gt-store-774fe.firebasestorage.app",
+            messagingSenderId: "237273289443",
+            appId: "1:237273289443:web:eae46a81c1ab7519f86bd6",
+            measurementId: "G-RK3P4FNCPG"
+        };
         // 2. यहां एडमिन उपयोगकर्ता के UIDs डालें (आप एक से अधिक डाल सकते हैं)
         // आप Firebase Console -> Authentication में जाकर यूजर का UID कॉपी कर सकते हैं।
         const ADMIN_UIDS = ['r2nBH4S09rWXndQhG70cljSDyPv1', ''];
@@ -1123,9 +1245,163 @@ const firebaseConfig = {
                     case 'redeem_codes': renderRedeemCodesPage(); break;
                     case 'requests': renderRequestsPage(); break;
                     case 'maintenance': renderMaintenancePage(); break;
+                    case 'settings': initTMDBSetting(); break;
                 }
             }
         }
+
+        // ===============================================================
+        // TMDB INTEGRATION
+        // ===============================================================
+        let TMDB_API_KEY = localStorage.getItem('rangmanch_tmdb_key') || 'f36507198e7cb992d3012d8cf70ad609';
+
+        function saveTMDBKey() {
+            const key = document.getElementById('tmdb-api-key-input').value.trim();
+            if (key) {
+                localStorage.setItem('rangmanch_tmdb_key', key);
+                TMDB_API_KEY = key;
+                alert('TMDB API Key saved locally!');
+            } else {
+                alert('Please enter a valid API Key.');
+            }
+        }
+
+        function initTMDBSetting() {
+            setTimeout(() => {
+                const input = document.getElementById('tmdb-api-key-input');
+                if (input) input.value = TMDB_API_KEY;
+            }, 100);
+        }
+
+        async function testTMDBKey() {
+            const key = document.getElementById('tmdb-api-key-input').value.trim();
+            const resultEl = document.getElementById('tmdb-test-result');
+
+            if (!key) {
+                alert('Please enter a key first.');
+                return;
+            }
+
+            resultEl.style.display = 'block';
+            resultEl.style.color = 'var(--text-secondary)';
+            resultEl.textContent = 'Testing connection...';
+
+            try {
+                const response = await fetch(`https://api.themoviedb.org/3/authentication?api_key=${key}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    resultEl.style.color = '#4CAF50';
+                    resultEl.innerHTML = '<i class="fas fa-check-circle"></i> Connection successful! Key is valid.';
+                } else {
+                    resultEl.style.color = '#f44336';
+                    resultEl.innerHTML = '<i class="fas fa-times-circle"></i> Error: ' + (data.status_message || 'Invalid API key.');
+                }
+            } catch (error) {
+                resultEl.style.color = '#f44336';
+                resultEl.textContent = 'Failed to connect to TMDB API.';
+            }
+        }
+
+        async function searchTMDB(type) {
+            const query = document.getElementById('tmdb-search-input').value.trim();
+            const resultsContainer = document.getElementById('tmdb-results');
+
+            if (!TMDB_API_KEY) {
+                alert('Please set your TMDB API Key in Settings first.');
+                return;
+            }
+            if (!query) return;
+
+            resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Searching TMDB...</div>';
+            resultsContainer.style.display = 'block';
+
+            const tmdbType = (type === 'webseries' || type === 'anime') ? 'tv' : 'movie';
+            const url = `https://api.themoviedb.org/3/search/${tmdbType}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    let html = '<div style="padding: 10px; font-size: 12px; color: var(--text-secondary); border-bottom: 1px solid var(--border-color);">Results from TMDB:</div>';
+                    data.results.slice(0, 5).forEach(item => {
+                        const title = item.title || item.name;
+                        const date = item.release_date || item.first_air_date || 'N/A';
+                        const year = date.split('-')[0];
+                        const poster = item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : 'https://via.placeholder.com/40x60?text=No+Image';
+                        const rating = item.vote_average ? `<span style="background: var(--primary-color); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 10px;">★ ${item.vote_average.toFixed(1)}</span>` : '';
+
+                        html += `
+                        <div class="tmdb-item" onclick="selectTMDBItem('${type}', ${item.id}, '${tmdbType}')">
+                            <img src="${poster}">
+                            <div class="tmdb-item-info">
+                                <div class="tmdb-item-title">${title} ${rating}</div>
+                                <div class="tmdb-item-date"><i class="far fa-calendar-alt"></i> ${year} • ${tmdbType.toUpperCase()}</div>
+                            </div>
+                        </div>`;
+                    });
+                    resultsContainer.innerHTML = html;
+                } else {
+                    resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;"><i class="fas fa-search"></i> No results found.</div>';
+                }
+            } catch (error) {
+                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--primary-color);"><i class="fas fa-exclamation-circle"></i> Error searching TMDB. Check your API key.</div>';
+            }
+        }
+
+        async function selectTMDBItem(type, id, tmdbType) {
+            const resultsContainer = document.getElementById('tmdb-results');
+            resultsContainer.style.display = 'none';
+
+            try {
+                // Fetch details AND credits
+                const detailUrl = `https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits`;
+                const response = await fetch(detailUrl);
+                const item = await response.json();
+
+                // Populate form fields
+                const form = document.getElementById('modal-form');
+                if (form.querySelector('[name="title"]')) form.querySelector('[name="title"]').value = item.title || item.name;
+                if (form.querySelector('[name="year"]')) form.querySelector('[name="year"]').value = (item.release_date || item.first_air_date || '').split('-')[0];
+                if (form.querySelector('[name="poster"]')) form.querySelector('[name="poster"]').value = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '';
+                if (form.querySelector('[name="backdrop"]')) form.querySelector('[name="backdrop"]').value = item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : '';
+                if (form.querySelector('[name="genre"]')) form.querySelector('[name="genre"]').value = item.genres ? item.genres.map(g => g.name).join(', ') : '';
+                if (form.querySelector('[name="rating"]')) form.querySelector('[name="rating"]').value = item.vote_average ? item.vote_average.toFixed(1) : '';
+                if (form.querySelector('[name="language"]')) form.querySelector('[name="language"]').value = item.original_language ? item.original_language.toUpperCase() : '';
+                if (form.querySelector('[name="storyline"]')) form.querySelector('[name="storyline"]').value = item.overview || '';
+
+                // Cast (top 5)
+                if (item.credits && item.credits.cast) {
+                    const castData = {};
+                    item.credits.cast.slice(0, 5).forEach((actor, index) => {
+                        castData[index] = {
+                            name: actor.name,
+                            image: actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://i.ibb.co/yqg0Y3h/placeholder-avatar.jpg'
+                        };
+                    });
+                    if (form.querySelector('[name="cast"]')) form.querySelector('[name="cast"]').value = JSON.stringify(castData);
+                }
+
+                // Trailer
+                if (item.videos && item.videos.results) {
+                    const trailer = item.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+                    if (trailer && form.querySelector('[name="trailer"]')) {
+                        form.querySelector('[name="trailer"]').value = `https://www.youtube.com/watch?v=${trailer.key}`;
+                    }
+                }
+
+                alert('Form populated with TMDB data!');
+            } catch (error) {
+                console.error(error);
+                alert('Error fetching details from TMDB.');
+            }
+        }
+
+        window.searchTMDB = searchTMDB;
+        window.selectTMDBItem = selectTMDBItem;
+        window.saveTMDBKey = saveTMDBKey;
+        window.testTMDBKey = testTMDBKey;
 
         // ===============================================================
         // DASHBOARD
@@ -1281,7 +1557,15 @@ const firebaseConfig = {
                     "Category": "category",
                     "Language": "language",
                     "Logo URL": "logoUrl",
-                    "Stream URL (.m3u8)": "streamUrl"
+                    "Stream URL (.m3u8)": "streamUrl",
+                    // TMDB Raw Keys Mapping
+                    "poster_path": "poster",
+                    "backdrop_path": "backdrop",
+                    "release_date": "year",
+                    "first_air_date": "year",
+                    "vote_average": "rating",
+                    "overview": "storyline",
+                    "original_language": "language"
                 };
 
                 bulkSaveBtn.disabled = true;
@@ -1299,6 +1583,18 @@ const firebaseConfig = {
                         standardKey = standardKey.replace(/[.#$/[\]]/g, '');
 
                         let value = rawItem[key];
+
+                        // TMDB Image Path Prefixing
+                        if ((standardKey === 'poster' || standardKey === 'backdrop') && typeof value === 'string' && value.startsWith('/')) {
+                            const prefix = standardKey === 'poster' ? 'https://image.tmdb.org/t/p/w500' : 'https://image.tmdb.org/t/p/original';
+                            value = prefix + value;
+                        }
+
+                        // TMDB Date to Year extraction
+                        if (standardKey === 'year' && typeof value === 'string' && value.includes('-')) {
+                            value = value.split('-')[0];
+                        }
+
                         // Basic value cleaning
                         if (standardKey === 'tier' && typeof value === 'string') {
                             value = value.toLowerCase();
@@ -1397,7 +1693,22 @@ const firebaseConfig = {
         }
 
         function getContentFormFields(type) {
-            let baseFields = `
+            let tmdbSearchHtml = '';
+            if (['movies', 'webseries', 'anime', 'anime_movies'].includes(type)) {
+                tmdbSearchHtml = `
+                <div class="tmdb-search-container">
+                    <label style="display: block; margin-bottom: 10px; color: var(--primary-color); font-weight: 600;">
+                        <i class="fas fa-search"></i> Autofill from TMDB
+                    </label>
+                    <div class="tmdb-search-input-group">
+                        <input type="text" id="tmdb-search-input" placeholder="Enter movie or series title..." onkeydown="if(event.key==='Enter'){event.preventDefault(); searchTMDB('${type}');}">
+                        <button type="button" class="btn btn-primary" onclick="searchTMDB('${type}')">Search</button>
+                    </div>
+                    <div id="tmdb-results" class="tmdb-results"></div>
+                </div>`;
+            }
+
+            let baseFields = tmdbSearchHtml + `
         <div style="grid-column: 1/-1; margin-bottom: 20px; text-align: right;">
             <a href="javascript:void(0)" onclick="closeModal(modal); openBulkModal('${type}')" style="color: var(--primary-color); font-size: 13px; text-decoration: none; font-weight: 600;">
                 <i class="fas fa-file-import"></i> Switch to Bulk Upload (JSON)
@@ -1417,6 +1728,7 @@ const firebaseConfig = {
             <select name="tier"><option value="free">Free</option><option value="premium">Premium</option></select>
         </div>
         <div class="form-group full-width"><label>Storyline</label><textarea name="storyline"></textarea></div>
+        <input type="hidden" name="cast">
     `;
 
             switch (type) {
@@ -1497,6 +1809,14 @@ const firebaseConfig = {
                 } catch (e) {
                     alert("Error: Episodes JSON is not valid.");
                     return;
+                }
+            }
+
+            if (data.cast) {
+                try {
+                    data.cast = JSON.parse(data.cast);
+                } catch (e) {
+                    // Fail silently or handle
                 }
             }
             data.timestamp = firebase.database.ServerValue.TIMESTAMP;
@@ -2036,5 +2356,3 @@ const firebaseConfig = {
 </body>
 
 </html>
-
-
